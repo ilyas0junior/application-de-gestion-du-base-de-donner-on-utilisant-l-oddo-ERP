@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { subscriptionSchema } from '@/lib/validations';
 
 interface Subscription {
   id?: string;
@@ -55,22 +56,28 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, onSave }:
     setLoading(true);
 
     try {
+      const validatedData = subscriptionSchema.parse(formData);
+      
       if (subscription?.id) {
         const { error } = await supabase
           .from('subscriptions')
-          .update(formData)
+          .update(validatedData)
           .eq('id', subscription.id);
         if (error) throw error;
         toast.success('Abonnement modifié avec succès');
       } else {
-        const { error } = await supabase.from('subscriptions').insert([formData]);
+        const { error } = await supabase.from('subscriptions').insert([validatedData]);
         if (error) throw error;
         toast.success('Abonnement ajouté avec succès');
       }
       onSave();
       onOpenChange(false);
     } catch (error: any) {
-      toast.error(error.message || 'Erreur lors de la sauvegarde');
+      if (error.errors) {
+        toast.error(error.errors[0]?.message || 'Données invalides');
+      } else {
+        toast.error(error.message || 'Erreur lors de la sauvegarde');
+      }
     } finally {
       setLoading(false);
     }

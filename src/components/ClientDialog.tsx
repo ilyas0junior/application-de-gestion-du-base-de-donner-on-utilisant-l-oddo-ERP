@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { clientSchema } from '@/lib/validations';
 
 interface Client {
   id?: string;
@@ -34,22 +35,28 @@ export function ClientDialog({ open, onOpenChange, client, onSave }: ClientDialo
     setLoading(true);
 
     try {
+      const validatedData = clientSchema.parse(formData);
+      
       if (client?.id) {
         const { error } = await supabase
           .from('clients')
-          .update(formData)
+          .update(validatedData)
           .eq('id', client.id);
         if (error) throw error;
         toast.success('Client modifié avec succès');
       } else {
-        const { error } = await supabase.from('clients').insert([formData]);
+        const { error } = await supabase.from('clients').insert([validatedData]);
         if (error) throw error;
         toast.success('Client ajouté avec succès');
       }
       onSave();
       onOpenChange(false);
     } catch (error: any) {
-      toast.error(error.message || 'Erreur lors de la sauvegarde');
+      if (error.errors) {
+        toast.error(error.errors[0]?.message || 'Données invalides');
+      } else {
+        toast.error(error.message || 'Erreur lors de la sauvegarde');
+      }
     } finally {
       setLoading(false);
     }

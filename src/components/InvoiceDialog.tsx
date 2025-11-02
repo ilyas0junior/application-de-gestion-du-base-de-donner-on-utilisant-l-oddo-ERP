@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { invoiceSchema } from '@/lib/validations';
 
 interface Invoice {
   id?: string;
@@ -53,22 +54,28 @@ export function InvoiceDialog({ open, onOpenChange, invoice, onSave }: InvoiceDi
     setLoading(true);
 
     try {
+      const validatedData = invoiceSchema.parse(formData);
+      
       if (invoice?.id) {
         const { error } = await supabase
           .from('invoices')
-          .update(formData)
+          .update(validatedData)
           .eq('id', invoice.id);
         if (error) throw error;
         toast.success('Facture modifiée avec succès');
       } else {
-        const { error } = await supabase.from('invoices').insert([formData]);
+        const { error } = await supabase.from('invoices').insert([validatedData]);
         if (error) throw error;
         toast.success('Facture ajoutée avec succès');
       }
       onSave();
       onOpenChange(false);
     } catch (error: any) {
-      toast.error(error.message || 'Erreur lors de la sauvegarde');
+      if (error.errors) {
+        toast.error(error.errors[0]?.message || 'Données invalides');
+      } else {
+        toast.error(error.message || 'Erreur lors de la sauvegarde');
+      }
     } finally {
       setLoading(false);
     }

@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { ticketSchema } from '@/lib/validations';
 
 interface Ticket {
   id?: string;
@@ -54,22 +55,28 @@ export function TicketDialog({ open, onOpenChange, ticket, onSave }: TicketDialo
     setLoading(true);
 
     try {
+      const validatedData = ticketSchema.parse(formData);
+      
       if (ticket?.id) {
         const { error } = await supabase
           .from('support_tickets')
-          .update(formData)
+          .update(validatedData)
           .eq('id', ticket.id);
         if (error) throw error;
         toast.success('Ticket modifié avec succès');
       } else {
-        const { error } = await supabase.from('support_tickets').insert([formData]);
+        const { error } = await supabase.from('support_tickets').insert([validatedData]);
         if (error) throw error;
         toast.success('Ticket ajouté avec succès');
       }
       onSave();
       onOpenChange(false);
     } catch (error: any) {
-      toast.error(error.message || 'Erreur lors de la sauvegarde');
+      if (error.errors) {
+        toast.error(error.errors[0]?.message || 'Données invalides');
+      } else {
+        toast.error(error.message || 'Erreur lors de la sauvegarde');
+      }
     } finally {
       setLoading(false);
     }
