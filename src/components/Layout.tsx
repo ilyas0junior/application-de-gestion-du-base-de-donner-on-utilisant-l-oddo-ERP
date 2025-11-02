@@ -9,7 +9,8 @@ import {
   FileText,
   Settings,
   Menu,
-  LogOut
+  LogOut,
+  Package
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -25,6 +26,7 @@ const menuItems = [
   { icon: Smartphone, label: "Abonnements", path: "/subscriptions" },
   { icon: Ticket, label: "Support", path: "/support" },
   { icon: FileText, label: "Facturation", path: "/billing" },
+  { icon: Package, label: "Stock", path: "/inventory" },
   { icon: Settings, label: "Paramètres", path: "/settings" },
 ];
 

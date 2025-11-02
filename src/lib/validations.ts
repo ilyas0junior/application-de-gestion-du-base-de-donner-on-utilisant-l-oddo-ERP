@@ -41,7 +41,16 @@ export const ticketSchema = z.object({
   status: z.enum(['Nouveau', 'En cours', 'Résolu'], { errorMap: () => ({ message: 'Statut invalide' }) }),
 });
 
+export const inventorySchema = z.object({
+  name: z.string().trim().min(2, 'Le nom doit contenir au moins 2 caractères').max(100, 'Le nom ne peut pas dépasser 100 caractères'),
+  description: z.string().max(500, 'La description ne peut pas dépasser 500 caractères').optional(),
+  quantity: z.number().int('La quantité doit être un nombre entier').min(0, 'La quantité ne peut pas être négative'),
+  min_quantity: z.number().int('La quantité minimale doit être un nombre entier').min(0, 'La quantité minimale ne peut pas être négative'),
+  unit: z.string().trim().min(1, 'L\'unité est requise').max(20, 'L\'unité ne peut pas dépasser 20 caractères'),
+});
+
 export type ClientFormData = z.infer<typeof clientSchema>;
 export type InvoiceFormData = z.infer<typeof invoiceSchema>;
 export type SubscriptionFormData = z.infer<typeof subscriptionSchema>;
 export type TicketFormData = z.infer<typeof ticketSchema>;
+export type InventoryFormData = z.infer<typeof inventorySchema>;
