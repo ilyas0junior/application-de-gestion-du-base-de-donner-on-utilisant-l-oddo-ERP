@@ -66,7 +66,7 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, onSave }:
         if (error) throw error;
         toast.success('Abonnement modifié avec succès');
       } else {
-        const { error } = await supabase.from('subscriptions').insert([validatedData]);
+        const { error } = await supabase.from('subscriptions').insert([validatedData as any]);
         if (error) throw error;
         toast.success('Abonnement ajouté avec succès');
       }

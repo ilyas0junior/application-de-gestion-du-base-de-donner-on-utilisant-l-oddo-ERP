@@ -47,7 +47,7 @@ export function InventoryDialog({ open, onOpenChange, onSuccess, item }: Invento
       } else {
         const { error } = await supabase
           .from("inventory")
-          .insert([data]);
+          .insert([data as any]);
         
         if (error) throw error;
         toast.success("Article ajouté avec succès");

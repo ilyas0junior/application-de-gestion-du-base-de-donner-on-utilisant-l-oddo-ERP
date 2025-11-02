@@ -65,7 +65,7 @@ export function TicketDialog({ open, onOpenChange, ticket, onSave }: TicketDialo
         if (error) throw error;
         toast.success('Ticket modifié avec succès');
       } else {
-        const { error } = await supabase.from('support_tickets').insert([validatedData]);
+        const { error } = await supabase.from('support_tickets').insert([validatedData as any]);
         if (error) throw error;
         toast.success('Ticket ajouté avec succès');
       }

@@ -64,7 +64,7 @@ export function InvoiceDialog({ open, onOpenChange, invoice, onSave }: InvoiceDi
         if (error) throw error;
         toast.success('Facture modifiée avec succès');
       } else {
-        const { error } = await supabase.from('invoices').insert([validatedData]);
+        const { error } = await supabase.from('invoices').insert([validatedData as any]);
         if (error) throw error;
         toast.success('Facture ajoutée avec succès');
       }

@@ -45,7 +45,7 @@ export function ClientDialog({ open, onOpenChange, client, onSave }: ClientDialo
         if (error) throw error;
         toast.success('Client modifié avec succès');
       } else {
-        const { error } = await supabase.from('clients').insert([validatedData]);
+        const { error } = await supabase.from('clients').insert([validatedData as any]);
         if (error) throw error;
         toast.success('Client ajouté avec succès');
       }

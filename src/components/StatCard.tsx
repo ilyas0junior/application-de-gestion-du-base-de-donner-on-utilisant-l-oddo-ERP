@@ -6,14 +6,14 @@ interface StatCardProps {
   title: string;
   value: string | number;
   icon: LucideIcon;
-  trend?: {
-    value: number;
-    isPositive: boolean;
-  };
+  trend?: string;
+  trendLabel?: string;
   className?: string;
 }
 
-export const StatCard = ({ title, value, icon: Icon, trend, className }: StatCardProps) => {
+export const StatCard = ({ title, value, icon: Icon, trend, trendLabel, className }: StatCardProps) => {
+  const isPositive = trend?.startsWith('+');
+  
   return (
     <Card className={cn("transition-shadow hover:shadow-lg", className)}>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -27,9 +27,9 @@ export const StatCard = ({ title, value, icon: Icon, trend, className }: StatCar
         {trend && (
           <p className={cn(
             "text-xs mt-1",
-            trend.isPositive ? "text-success" : "text-destructive"
+            isPositive ? "text-green-600" : "text-red-600"
           )}>
-            {trend.isPositive ? "+" : ""}{trend.value}% ce mois
+            {trend} {trendLabel}
           </p>
         )}
       </CardContent>
