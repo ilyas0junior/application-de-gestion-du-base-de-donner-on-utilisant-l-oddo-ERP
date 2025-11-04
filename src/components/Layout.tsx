@@ -10,7 +10,8 @@ import {
   Settings,
   Menu,
   LogOut,
-  Package
+  Package,
+  TrendingUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -21,9 +22,10 @@ interface LayoutProps {
 }
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Dashboard", path: "/" },
+  { icon: LayoutDashboard, label: "Tableau de bord", path: "/" },
   { icon: Users, label: "Clients", path: "/clients" },
   { icon: Smartphone, label: "Abonnements", path: "/subscriptions" },
+  { icon: TrendingUp, label: "CRM Pipeline", path: "/crm" },
   { icon: Ticket, label: "Support", path: "/support" },
   { icon: FileText, label: "Facturation", path: "/billing" },
   { icon: Package, label: "Stock", path: "/inventory" },

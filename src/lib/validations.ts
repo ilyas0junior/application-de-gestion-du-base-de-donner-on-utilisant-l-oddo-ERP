@@ -49,8 +49,20 @@ export const inventorySchema = z.object({
   unit: z.string().trim().min(1, 'L\'unité est requise').max(20, 'L\'unité ne peut pas dépasser 20 caractères'),
 });
 
+export const opportunitySchema = z.object({
+  client_id: z.string().uuid('Client invalide'),
+  title: z.string().trim().min(1, 'Le titre est requis').max(200, 'Le titre ne peut pas dépasser 200 caractères'),
+  description: z.string().max(1000, 'La description ne peut pas dépasser 1000 caractères').optional(),
+  value: z.number().min(0, 'La valeur doit être positive').max(999999999, 'La valeur est trop élevée'),
+  stage_id: z.string().uuid('Étape invalide'),
+  probability: z.number().int('La probabilité doit être un nombre entier').min(0, 'La probabilité ne peut pas être négative').max(100, 'La probabilité ne peut pas dépasser 100'),
+  expected_close_date: z.string().refine((date) => !date || !isNaN(Date.parse(date)), 'Date de clôture invalide').optional(),
+  status: z.enum(['Ouvert', 'Fermé', 'Abandonné'], { errorMap: () => ({ message: 'Statut invalide' }) }),
+});
+
 export type ClientFormData = z.infer<typeof clientSchema>;
 export type InvoiceFormData = z.infer<typeof invoiceSchema>;
 export type SubscriptionFormData = z.infer<typeof subscriptionSchema>;
 export type TicketFormData = z.infer<typeof ticketSchema>;
 export type InventoryFormData = z.infer<typeof inventorySchema>;
+export type OpportunityFormData = z.infer<typeof opportunitySchema>;
