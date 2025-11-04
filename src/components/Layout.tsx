@@ -40,7 +40,7 @@ const Sidebar = () => {
         <h1 className="text-2xl font-bold text-sidebar-primary">
           Digital Med Telecom
         </h1>
-        <p className="text-sm text-sidebar-foreground/70 mt-1">ERP Management</p>
+        <p className="text-sm text-sidebar-foreground/70 mt-1">Gestion ERP</p>
       </div>
       
       <nav className="flex-1 space-y-1 p-4">

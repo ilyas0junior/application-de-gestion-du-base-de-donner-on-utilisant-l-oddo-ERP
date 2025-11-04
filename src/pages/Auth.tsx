@@ -131,7 +131,7 @@ const Auth = () => {
                   <Input
                     id="signup-name"
                     type="text"
-                    placeholder="محمد الأمين"
+                    placeholder="Jean Dupont"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     required
