@@ -9,6 +9,7 @@ import { InventoryDialog } from "@/components/InventoryDialog";
 import { Plus, Edit, Trash2, AlertTriangle, Package } from "lucide-react";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { ExportButtons } from "@/components/ExportButtons";
 
 export default function Inventory() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -68,6 +69,15 @@ export default function Inventory() {
 
   const lowStockItems = items.filter(item => item.quantity <= item.min_quantity);
 
+  const inventoryColumns = [
+    { header: "Nom", accessor: "name" },
+    { header: "Description", accessor: (row: any) => row.description || "-" },
+    { header: "Quantité", accessor: "quantity" },
+    { header: "Quantité min.", accessor: "min_quantity" },
+    { header: "Unité", accessor: "unit" },
+    { header: "Statut", accessor: (row: any) => row.quantity === 0 ? "Épuisé" : row.quantity <= row.min_quantity ? "Stock faible" : "En stock" },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -75,10 +85,18 @@ export default function Inventory() {
           <h1 className="text-3xl font-bold">Gestion du Stock</h1>
           <p className="text-muted-foreground">Gérez votre inventaire et suivez les niveaux de stock</p>
         </div>
-        <Button onClick={handleAdd}>
-          <Plus className="mr-2 h-4 w-4" />
-          Ajouter un article
-        </Button>
+        <div className="flex gap-2">
+          <ExportButtons
+            data={items}
+            columns={inventoryColumns}
+            title="Inventaire"
+            filename="inventaire"
+          />
+          <Button onClick={handleAdd}>
+            <Plus className="mr-2 h-4 w-4" />
+            Ajouter un article
+          </Button>
+        </div>
       </div>
 
       {lowStockItems.length > 0 && (

@@ -8,6 +8,7 @@ import { InvoiceDialog } from "@/components/InvoiceDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { ExportButtons } from "@/components/ExportButtons";
 
 interface Invoice {
   id: string;
@@ -103,6 +104,15 @@ export default function Billing() {
     setDialogOpen(true);
   };
 
+  const invoiceColumns = [
+    { header: "Numéro", accessor: "invoice_number" },
+    { header: "Client", accessor: (row: Invoice) => row.clients?.name || "" },
+    { header: "Montant (MAD)", accessor: "amount" },
+    { header: "Date d'émission", accessor: (row: Invoice) => new Date(row.issue_date).toLocaleDateString('fr-FR') },
+    { header: "Date d'échéance", accessor: (row: Invoice) => new Date(row.due_date).toLocaleDateString('fr-FR') },
+    { header: "Statut", accessor: "status" },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -110,10 +120,18 @@ export default function Billing() {
           <h1 className="text-3xl font-bold text-foreground">Facturation</h1>
           <p className="text-muted-foreground mt-1">Gérez toutes vos factures</p>
         </div>
-        <Button onClick={handleAdd}>
-          <Plus className="mr-2 h-4 w-4" />
-          Nouvelle Facture
-        </Button>
+        <div className="flex gap-2">
+          <ExportButtons
+            data={filteredInvoices}
+            columns={invoiceColumns}
+            title="Liste des Factures"
+            filename="factures"
+          />
+          <Button onClick={handleAdd}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nouvelle Facture
+          </Button>
+        </div>
       </div>
 
       <div className="flex items-center gap-4">

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, Plus, Mail, Phone, Building, Edit, Trash2 } from "lucide-react";
+import { ExportButtons } from "@/components/ExportButtons";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ClientDialog } from "@/components/ClientDialog";
@@ -80,6 +81,13 @@ const Clients = () => {
     client.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const clientColumns = [
+    { header: "Nom", accessor: "name" },
+    { header: "Email", accessor: "email" },
+    { header: "Téléphone", accessor: "phone" },
+    { header: "Statut", accessor: "status" },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -87,16 +95,24 @@ const Clients = () => {
           <h1 className="text-3xl font-bold text-foreground">Gestion des Clients</h1>
           <p className="text-muted-foreground mt-1">Gérez vos clients et leurs abonnements</p>
         </div>
-        <Button 
-          className="gap-2"
-          onClick={() => {
-            setSelectedClient(undefined);
-            setDialogOpen(true);
-          }}
-        >
-          <Plus className="h-4 w-4" />
-          Nouveau Client
-        </Button>
+        <div className="flex gap-2">
+          <ExportButtons
+            data={filteredClients}
+            columns={clientColumns}
+            title="Liste des Clients"
+            filename="clients"
+          />
+          <Button 
+            className="gap-2"
+            onClick={() => {
+              setSelectedClient(undefined);
+              setDialogOpen(true);
+            }}
+          >
+            <Plus className="h-4 w-4" />
+            Nouveau Client
+          </Button>
+        </div>
       </div>
 
       {/* Search Bar */}

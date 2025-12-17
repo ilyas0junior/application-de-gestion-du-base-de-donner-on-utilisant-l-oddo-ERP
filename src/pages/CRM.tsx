@@ -8,6 +8,7 @@ import { OpportunityDialog } from "@/components/OpportunityDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { ExportButtons } from "@/components/ExportButtons";
 
 interface Opportunity {
   id: string;
@@ -114,6 +115,16 @@ export default function CRM() {
     return getOpportunitiesByStage(stageId).reduce((sum, opp) => sum + Number(opp.value), 0);
   };
 
+  const opportunityColumns = [
+    { header: "Titre", accessor: "title" },
+    { header: "Client", accessor: (row: Opportunity) => row.clients?.name || "" },
+    { header: "Valeur (MAD)", accessor: "value" },
+    { header: "Étape", accessor: (row: Opportunity) => row.pipeline_stages?.name || "" },
+    { header: "Probabilité (%)", accessor: "probability" },
+    { header: "Date clôture prévue", accessor: (row: Opportunity) => row.expected_close_date ? new Date(row.expected_close_date).toLocaleDateString('fr-FR') : "-" },
+    { header: "Statut", accessor: "status" },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -121,10 +132,18 @@ export default function CRM() {
           <h1 className="text-3xl font-bold text-foreground">CRM - Pipeline Commercial</h1>
           <p className="text-muted-foreground mt-1">Gérez vos opportunités commerciales</p>
         </div>
-        <Button onClick={() => { setSelectedOpportunity(undefined); setDialogOpen(true); }}>
-          <Plus className="mr-2 h-4 w-4" />
-          Nouvelle Opportunité
-        </Button>
+        <div className="flex gap-2">
+          <ExportButtons
+            data={filteredOpportunities}
+            columns={opportunityColumns}
+            title="Opportunités Commerciales"
+            filename="opportunites"
+          />
+          <Button onClick={() => { setSelectedOpportunity(undefined); setDialogOpen(true); }}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nouvelle Opportunité
+          </Button>
+        </div>
       </div>
 
       <div className="flex items-center gap-4">

@@ -8,6 +8,7 @@ import { TicketDialog } from "@/components/TicketDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { ExportButtons } from "@/components/ExportButtons";
 
 interface Ticket {
   id: string;
@@ -101,6 +102,14 @@ export default function Support() {
     return <Badge variant={variants[status] || "default"}>{status}</Badge>;
   };
 
+  const ticketColumns = [
+    { header: "Numéro", accessor: "ticket_number" },
+    { header: "Client", accessor: (row: Ticket) => row.clients?.name || "" },
+    { header: "Sujet", accessor: "subject" },
+    { header: "Priorité", accessor: "priority" },
+    { header: "Statut", accessor: "status" },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -108,10 +117,18 @@ export default function Support() {
           <h1 className="text-3xl font-bold text-foreground">Helpdesk - Support</h1>
           <p className="text-muted-foreground mt-1">Gérez tous vos tickets de support</p>
         </div>
-        <Button onClick={() => { setSelectedTicket(undefined); setDialogOpen(true); }}>
-          <Plus className="mr-2 h-4 w-4" />
-          Nouveau Ticket
-        </Button>
+        <div className="flex gap-2">
+          <ExportButtons
+            data={filteredTickets}
+            columns={ticketColumns}
+            title="Tickets de Support"
+            filename="tickets-support"
+          />
+          <Button onClick={() => { setSelectedTicket(undefined); setDialogOpen(true); }}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nouveau Ticket
+          </Button>
+        </div>
       </div>
 
       <div className="flex items-center gap-4">

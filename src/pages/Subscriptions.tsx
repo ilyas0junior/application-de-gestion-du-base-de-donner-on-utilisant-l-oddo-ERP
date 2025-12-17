@@ -8,6 +8,7 @@ import { SubscriptionDialog } from "@/components/SubscriptionDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { ExportButtons } from "@/components/ExportButtons";
 
 interface Subscription {
   id: string;
@@ -91,6 +92,16 @@ export default function Subscriptions() {
     return <Badge variant={variants[status] || "default"}>{status}</Badge>;
   };
 
+  const subscriptionColumns = [
+    { header: "Client", accessor: (row: Subscription) => row.clients?.name || "" },
+    { header: "Type", accessor: "type" },
+    { header: "Plan", accessor: "plan" },
+    { header: "Prix (MAD/mois)", accessor: "price" },
+    { header: "Date de début", accessor: (row: Subscription) => new Date(row.start_date).toLocaleDateString('fr-FR') },
+    { header: "Prochain paiement", accessor: (row: Subscription) => new Date(row.next_billing).toLocaleDateString('fr-FR') },
+    { header: "Statut", accessor: "status" },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -98,10 +109,18 @@ export default function Subscriptions() {
           <h1 className="text-3xl font-bold text-foreground">Abonnements</h1>
           <p className="text-muted-foreground mt-1">Gérez tous les abonnements clients</p>
         </div>
-        <Button onClick={() => { setSelectedSubscription(undefined); setDialogOpen(true); }}>
-          <Plus className="mr-2 h-4 w-4" />
-          Nouvel Abonnement
-        </Button>
+        <div className="flex gap-2">
+          <ExportButtons
+            data={filteredSubscriptions}
+            columns={subscriptionColumns}
+            title="Liste des Abonnements"
+            filename="abonnements"
+          />
+          <Button onClick={() => { setSelectedSubscription(undefined); setDialogOpen(true); }}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nouvel Abonnement
+          </Button>
+        </div>
       </div>
 
       <div className="flex items-center gap-4">
